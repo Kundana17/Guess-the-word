@@ -3,38 +3,189 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guess The Word</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap"
-    rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Wordly - Premium cinematic word scramble puzzle.">
+  <title>Wordly | Premium Word Puzzle</title>
+  <link rel="stylesheet" href="styles2.css">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Crimson+Text:wght@400;600;700&display=swap"
     rel="stylesheet">
+
 </head>
 
 <body>
-  <h1 class="main-title">Guess the Word</h1>
-  <div class="game-box">
-    <div class="scrambledWord" id="scrambled-word">
-      scramble
+
+  <div class="app-container">
+    <header class="main-header">
+      <h1 class="main-title">Wordly</h1>
+      <button id="settings-trigger" class="icon-btn" aria-label="Settings">⚙️</button>
+    </header>
+
+    <!-- START SCREEN -->
+    <section id="screen-start" class="screen active">
+      <div class="glass-card start-card">
+        <h2 class="serif-title gold">Initiate Session</h2>
+        <p class="tagline">Determine your path through the lexicon.</p>
+
+        <div class="start-actions">
+          <button class="btn btn-gold" id="btn-daily-start">Daily Challenge</button>
+          <div class="difficulty-picker">
+            <select id="select-difficulty">
+              <option value="easy">Easy</option>
+              <option value="medium" selected>Medium</option>
+              <option value="hard">Hard</option>
+              <option value="expert">Expert</option>
+            </select>
+            <button class="btn btn-outline" id="btn-infinite-start">Infinite Play</button>
+          </div>
+        </div>
+
+        <div class="quick-stats">
+          <div class="qs-item"><span id="qs-best">0</span><small>Record</small></div>
+          <div class="qs-item"><span id="qs-wins">0</span><small>Solves</small></div>
+          <div class="qs-item"><span id="qs-daily">0</span><small>Streak</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section id="screen-game" class="screen">
+      <div class="game-meta">
+        <div class="meta-left">
+          <div id="game-timer" class="timer-display hidden">⏳ <span id="timer-val">30</span>s</div>
+          <div id="mode-badge" class="badge">Infinite</div>
+        </div>
+        <div class="meta-right">
+          <div class="streak-counter">Streak: <span id="streak-ui">0</span></div>
+        </div>
+      </div>
+
+      <div class="scramble-container">
+        <div id="display-scrambled" class="scrambled-text">...</div>
+        <div id="display-category" class="category-text">Category</div>
+      </div>
+
+      <div class="powerup-row">
+        <button class="pu-btn" id="pu-freeze" data-tip="⏱ +10 Seconds">⏱️ <span class="pu-count"
+            id="cnt-freeze">0</span></button>
+        <button class="pu-btn" id="pu-vowel" data-tip="🅰 Reveal Vowel">🅰️ <span class="pu-count"
+            id="cnt-vowel">0</span></button>
+        <button class="pu-btn" id="pu-scissors" data-tip="✂ Remove 2 Mistakes">✂️ <span class="pu-count"
+            id="cnt-scissors">0</span></button>
+        <button class="pu-btn" id="pu-life" data-tip="❤️ Extra Life Slot">❤️ <span class="pu-count"
+            id="cnt-life">0</span></button>
+      </div>
+
+      <div id="input-grid" class="input-grid"></div>
+
+      <div class="game-controls">
+        <button class="btn btn-gold" id="btn-submit">Submit</button>
+        <button class="btn btn-outline" id="btn-hint">Hint</button>
+        <button class="btn btn-outline" id="btn-skip">Skip</button>
+      </div>
+
+      <div class="mistake-tracking">
+        <div class="wrong-line">Wrong Guesses: <span id="wrong-letters"></span></div>
+        <div class="mistake-progress">Mistakes: <span id="mistake-count">0</span> / <span id="max-mistakes">6</span>
+        </div>
+      </div>
+
+      <div class="score-display">
+        <div class="sd-card">
+          <span class="sd-val" id="current-score">0</span>
+          <span class="sd-lbl">Session Score</span>
+        </div>
+        <div class="sd-card">
+          <span class="sd-val" id="combo-multiplier">x1.0</span>
+          <span class="sd-lbl">Combo</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- DASHBOARDS -->
+    <footer class="app-dashboards">
+      <div class="dash-row">
+        <div class="glass-card dash-panel">
+          <h3>Leaderboard</h3>
+          <div id="list-leaderboard" class="data-list"></div>
+        </div>
+        <div class="glass-card dash-panel">
+          <h3>Achievements</h3>
+          <div id="list-achievements" class="data-list"></div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" id="modal-container">
+    <div class="modal glass-card" id="modal-victory">
+      <h2 class="serif-title gold">Illumination</h2>
+      <div class="modal-body">
+        <p>Correct term discovered:</p>
+        <div class="result-word" id="victory-word">---</div>
+        <div class="result-stats">
+          <div class="rs-box"><span>+<span id="earned-points">0</span></span><small>Points</small></div>
+          <div class="rs-box"><span><span id="solve-time">0</span>s</span><small>Speed</small></div>
+        </div>
+      </div>
+      <button class="btn btn-gold modal-close-btn">Continue</button>
     </div>
-    <div class="input-box" id="inputContainer"> </div>
-    <div class="info">
-      <p>Mistakes:<span id="mistakes">0</span>/6</p>
-      <p>Wrong Guesses:<span id="wrong"></span> </p>
+
+    <div class="modal glass-card" id="modal-defeat">
+      <h2 class="serif-title red">Shadows</h2>
+      <div class="modal-body">
+        <p>The term remained hidden:</p>
+        <div class="result-word" id="defeat-word">---</div>
+        <p class="flavor-text">Precision leads to clarity.</p>
+      </div>
+      <button class="btn btn-outline modal-close-btn">Try Again</button>
     </div>
-    <div class="buttons">
-      <button id="random">Random</button>
-      <button id="reset">Reset</button>
+
+    <div class="modal glass-card" id="modal-settings">
+      <h2 class="serif-title">Configuration</h2>
+      <div class="settings-list">
+
+        <div class="setting-item">
+
+          <span>Difficulty</span>
+
+          <select id="settings-difficulty" class="settings-select">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+            <option value="expert">Expert</option>
+          </select>
+
+        </div>
+
+        <button class="btn btn-outline" id="btn-apply-difficulty" style="width:100%; margin-bottom:10px;">
+          Apply Difficulty
+        </button>
+
+        <hr style="border:0; border-top:1px solid var(--border-gold); margin:10px 0;">
+
+        <button class="btn btn-outline" id="btn-menu" style="width:100%; margin-bottom:10px;">
+          Return to Menu
+        </button>
+
+        <button class="btn" id="btn-reset-data"
+          style="width:100%; border:1px solid var(--lose-red); color:var(--lose-red); background:transparent;">
+          Reset All Data
+        </button>
+
+      </div>
+      <button class="btn btn-gold modal-close-btn">Close</button>
     </div>
   </div>
-  <script src="words.js"></script>
-  <script src="script.js"></script>
+
+  <div id="notification-bar">Achievement Unlocked!</div>
+
+  <script src="words2.js"></script>
+  <script src="script2.js"></script>
 </body>
 
 </html>
